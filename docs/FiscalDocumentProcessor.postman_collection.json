@@ -1,0 +1,94 @@
+{
+  "info": {
+    "name": "FiscalDocumentProcessor API",
+    "_postman_id": "fiscal-document-processor",
+    "description": "Collection to test FiscalDocumentProcessor API endpoints (upload, list, get, update, delete, health).\nSet variable `baseUrl` to your API base (e.g., http://localhost:8080).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080" },
+    { "key": "documentId", "value": "" },
+    { "key": "cnpj", "value": "" },
+    { "key": "uf", "value": "" },
+    { "key": "dataInicio", "value": "" },
+    { "key": "dataFim", "value": "" },
+    { "key": "tipoDocumento", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/health"
+      }
+    },
+    {
+      "name": "Upload Documento (multipart)",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "file",
+              "type": "file",
+              "src": "exemplo-nfe.xml"
+            }
+          ]
+        },
+        "url": "{{baseUrl}}/documentos/upload"
+      }
+    },
+    {
+      "name": "List Documentos (paged)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/documentos?page=1&pageSize=10&cnpj={{cnpj}}&uf={{uf}}&dataInicio={{dataInicio}}&dataFim={{dataFim}}&tipoDocumento={{tipoDocumento}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["documentos"],
+          "query": [
+            { "key": "page", "value": "1" },
+            { "key": "pageSize", "value": "10" },
+            { "key": "cnpj", "value": "{{cnpj}}" },
+            { "key": "uf", "value": "{{uf}}" },
+            { "key": "dataInicio", "value": "{{dataInicio}}" },
+            { "key": "dataFim", "value": "{{dataFim}}" },
+            { "key": "tipoDocumento", "value": "{{tipoDocumento}}" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get Documento by ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/documentos/{{documentId}}"
+      }
+    },
+    {
+      "name": "Update Documento",
+      "request": {
+        "method": "PUT",
+        "header": [ { "key": "Content-Type", "value": "application/json" } ],
+        "body": {
+          "mode": "raw",
+          "raw": "{ \"UF\": \"SP\", \"DataEmissao\": \"2024-02-01T00:00:00Z\", \"ValorTotal\": 123.45, \"Status\": \"Processado\" }"
+        },
+        "url": "{{baseUrl}}/documentos/{{documentId}}"
+      }
+    },
+    {
+      "name": "Delete Documento",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": "{{baseUrl}}/documentos/{{documentId}}"
+      }
+    }
+  ]
+}

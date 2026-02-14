@@ -1,0 +1,18 @@
+# Build
+bin/
+obj/
+/.vs/
+*.user
+*.suo
+*.DS_Store
+.env
+
+# Logs
+logs/
+*.log
+
+# Rider
+.idea/
+
+# Test results
+TestResults/

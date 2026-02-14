@@ -1,0 +1,52 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FiscalDocumentProcessor.Api", "FiscalDocumentProcessor.Api/FiscalDocumentProcessor.Api.csproj", "{4C522022-A45B-4564-B032-BAC3332B6FAF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FiscalDocumentProcessor.Application", "FiscalDocumentProcessor.Application/FiscalDocumentProcessor.Application.csproj", "{BB0E80C9-B0BF-437B-B77F-85A0953785AA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FiscalDocumentProcessor.Domain", "FiscalDocumentProcessor.Domain/FiscalDocumentProcessor.Domain.csproj", "{C2C09A7D-A3AC-40D3-B340-5E7FEF288020}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FiscalDocumentProcessor.Infrastructure", "FiscalDocumentProcessor.Infrastructure/FiscalDocumentProcessor.Infrastructure.csproj", "{527FFEEF-3B26-4DB9-9BE4-33AB12FF6457}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FiscalDocumentProcessor.Worker", "FiscalDocumentProcessor.Worker/FiscalDocumentProcessor.Worker.csproj", "{B7646D40-8456-4BD2-9395-A57FDD0C8AEE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FiscalDocumentProcessor.Tests", "FiscalDocumentProcessor.Tests/FiscalDocumentProcessor.Tests.csproj", "{8B35B222-7F22-4C74-A060-4810DE82B4BE}"
+EndProject
+Global
+    GlobalSection(SolutionConfigurationPlatforms) = preSolution
+        Debug|Any CPU = Debug|Any CPU
+        Release|Any CPU = Release|Any CPU
+    EndGlobalSection
+    GlobalSection(ProjectConfigurationPlatforms) = postSolution
+        {4C522022-A45B-4564-B032-BAC3332B6FAF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+        {4C522022-A45B-4564-B032-BAC3332B6FAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+        {4C522022-A45B-4564-B032-BAC3332B6FAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+        {4C522022-A45B-4564-B032-BAC3332B6FAF}.Release|Any CPU.Build.0 = Release|Any CPU
+        {BB0E80C9-B0BF-437B-B77F-85A0953785AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+        {BB0E80C9-B0BF-437B-B77F-85A0953785AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+        {BB0E80C9-B0BF-437B-B77F-85A0953785AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+        {BB0E80C9-B0BF-437B-B77F-85A0953785AA}.Release|Any CPU.Build.0 = Release|Any CPU
+        {C2C09A7D-A3AC-40D3-B340-5E7FEF288020}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+        {C2C09A7D-A3AC-40D3-B340-5E7FEF288020}.Debug|Any CPU.Build.0 = Debug|Any CPU
+        {C2C09A7D-A3AC-40D3-B340-5E7FEF288020}.Release|Any CPU.ActiveCfg = Release|Any CPU
+        {C2C09A7D-A3AC-40D3-B340-5E7FEF288020}.Release|Any CPU.Build.0 = Release|Any CPU
+        {527FFEEF-3B26-4DB9-9BE4-33AB12FF6457}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+        {527FFEEF-3B26-4DB9-9BE4-33AB12FF6457}.Debug|Any CPU.Build.0 = Debug|Any CPU
+        {527FFEEF-3B26-4DB9-9BE4-33AB12FF6457}.Release|Any CPU.ActiveCfg = Release|Any CPU
+        {527FFEEF-3B26-4DB9-9BE4-33AB12FF6457}.Release|Any CPU.Build.0 = Release|Any CPU
+        {B7646D40-8456-4BD2-9395-A57FDD0C8AEE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+        {B7646D40-8456-4BD2-9395-A57FDD0C8AEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+        {B7646D40-8456-4BD2-9395-A57FDD0C8AEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+        {B7646D40-8456-4BD2-9395-A57FDD0C8AEE}.Release|Any CPU.Build.0 = Release|Any CPU
+        {8B35B222-7F22-4C74-A060-4810DE82B4BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+        {8B35B222-7F22-4C74-A060-4810DE82B4BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+        {8B35B222-7F22-4C74-A060-4810DE82B4BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+        {8B35B222-7F22-4C74-A060-4810DE82B4BE}.Release|Any CPU.Build.0 = Release|Any CPU
+
+    EndGlobalSection
+    GlobalSection(SolutionProperties) = preSolution
+        HideSolutionNode = FALSE
+    EndGlobalSection
+EndGlobal

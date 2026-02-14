@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<NFe>
+  <infNFe>
+    <ide>
+      <dhEmi>2024-01-01T12:00:00-03:00</dhEmi>
+    </ide>
+    <emit>
+      <CNPJ>12345678000199</CNPJ>
+      <enderEmit>
+        <UF>SP</UF>
+      </enderEmit>
+    </emit>
+    <dest>
+      <CNPJ>99887766000111</CNPJ>
+    </dest>
+    <total>
+      <ICMSTot>
+        <vNF>1500.75</vNF>
+      </ICMSTot>
+    </total>
+    <chNFe>35191234567800019900550010000000011000000010</chNFe>
+  </infNFe>
+</NFe>

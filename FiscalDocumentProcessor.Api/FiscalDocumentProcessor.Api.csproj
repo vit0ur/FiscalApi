@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.1.0" />
+    <PackageReference Include="FluentValidation" Version="11.9.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+    <PackageReference Include="Serilog.AspNetCore" Version="8.0.1" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="5.0.1" />
+    <PackageReference Include="Serilog.Enrichers.Environment" Version="2.4.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="6.6.2" />
+    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="8.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.6" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\FiscalDocumentProcessor.Application\FiscalDocumentProcessor.Application.csproj" />
+    <ProjectReference Include="..\FiscalDocumentProcessor.Infrastructure\FiscalDocumentProcessor.Infrastructure.csproj" />
+    <ProjectReference Include="..\FiscalDocumentProcessor.Domain\FiscalDocumentProcessor.Domain.csproj" />
+  </ItemGroup>
+</Project>

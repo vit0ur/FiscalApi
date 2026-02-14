@@ -1,0 +1,13 @@
+{
+  "profiles": {
+    "FiscalDocumentProcessor.Api": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": true,
+      "applicationUrl": "https://localhost:7057;http://localhost:5057",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}
