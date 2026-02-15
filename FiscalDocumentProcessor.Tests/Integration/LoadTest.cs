@@ -1,6 +1,7 @@
 using System.Net.Http;
 using System.Text;
 using NBomber.Contracts;
+using NBomber.Contracts.Stats;
 using NBomber.CSharp;
 using NUnit.Framework;
 
@@ -24,19 +25,21 @@ public class LoadTest
     [Test]
     public void UploadXml_ConstantLoad_Test()
     {
-        var scenario = ScenarioBuilder.CreateScenario("upload_xml_constant", async ctx =>
+        var iteration = 0;
+        var scenario = Scenario.Create("upload_xml_constant", async ctx =>
         {
             var client = new HttpClient { Timeout = TimeSpan.FromSeconds(30) };
             using var content = new MultipartFormDataContent();
 
             // Gera um XML único para evitar rejeição por idempotência
-            var xml = GenerateNfeXml(ctx.ScenarioIteration);
+            var iterValue = System.Threading.Interlocked.Increment(ref iteration) - 1;
+            var xml = GenerateNfeXml(iterValue);
             content.Add(new StringContent(xml, Encoding.UTF8, "application/xml"), "file", "doc.xml");
 
             var res = await client.PostAsync($"{_apiBaseUrl}/documentos/upload", content);
             return res.IsSuccessStatusCode
-                ? Response.Ok(statusCode: (int)res.StatusCode)
-                : Response.Fail(statusCode: (int)res.StatusCode);
+                ? Response.Ok()
+                : Response.Fail();
         })
         .WithLoadSimulations(
             Simulation.KeepConstant(copies: 10, during: TimeSpan.FromSeconds(30))
@@ -57,20 +60,22 @@ public class LoadTest
     [Test]
     public void UploadXml_RampUp_Test()
     {
-        var scenario = ScenarioBuilder.CreateScenario("upload_xml_rampup", async ctx =>
+        var iteration = 0;
+        var scenario = Scenario.Create("upload_xml_rampup", async ctx =>
         {
             var client = new HttpClient { Timeout = TimeSpan.FromSeconds(30) };
             using var content = new MultipartFormDataContent();
-            var xml = GenerateNfeXml(ctx.ScenarioIteration);
+            var iterValue = System.Threading.Interlocked.Increment(ref iteration) - 1;
+            var xml = GenerateNfeXml(iterValue);
             content.Add(new StringContent(xml, Encoding.UTF8, "application/xml"), "file", "doc.xml");
 
             var res = await client.PostAsync($"{_apiBaseUrl}/documentos/upload", content);
             return res.IsSuccessStatusCode
-                ? Response.Ok(statusCode: (int)res.StatusCode)
-                : Response.Fail(statusCode: (int)res.StatusCode);
+                ? Response.Ok()
+                : Response.Fail();
         })
         .WithLoadSimulations(
-            Simulation.RampUp(
+            Simulation.KeepConstant(
                 copies: 20,
                 during: TimeSpan.FromSeconds(60)
             )
@@ -91,17 +96,19 @@ public class LoadTest
     [Test]
     public void UploadXml_Stress_Test()
     {
-        var scenario = ScenarioBuilder.CreateScenario("upload_xml_stress", async ctx =>
+        var iteration = 0;
+        var scenario = Scenario.Create("upload_xml_stress", async ctx =>
         {
             var client = new HttpClient { Timeout = TimeSpan.FromSeconds(30) };
             using var content = new MultipartFormDataContent();
-            var xml = GenerateNfeXml(ctx.ScenarioIteration);
+            var iterValue = System.Threading.Interlocked.Increment(ref iteration) - 1;
+            var xml = GenerateNfeXml(iterValue);
             content.Add(new StringContent(xml, Encoding.UTF8, "application/xml"), "file", "doc.xml");
 
             var res = await client.PostAsync($"{_apiBaseUrl}/documentos/upload", content);
             return res.IsSuccessStatusCode
-                ? Response.Ok(statusCode: (int)res.StatusCode)
-                : Response.Fail(statusCode: (int)res.StatusCode);
+                ? Response.Ok()
+                : Response.Fail();
         })
         .WithLoadSimulations(
             Simulation.KeepConstant(copies: 50, during: TimeSpan.FromSeconds(20))
@@ -123,15 +130,15 @@ public class LoadTest
     [Test]
     public void GetDocumentos_Read_Load_Test()
     {
-        var scenario = ScenarioBuilder.CreateScenario("get_documentos_read", async ctx =>
+        var scenario = Scenario.Create("get_documentos_read", async ctx =>
         {
             var client = new HttpClient { Timeout = TimeSpan.FromSeconds(30) };
             var queryParams = $"?page=1&pageSize=50"; // Obrigatório por paginação
 
             var res = await client.GetAsync($"{_apiBaseUrl}/documentos{queryParams}");
             return res.IsSuccessStatusCode
-                ? Response.Ok(statusCode: (int)res.StatusCode)
-                : Response.Fail(statusCode: (int)res.StatusCode);
+                ? Response.Ok()
+                : Response.Fail();
         })
         .WithLoadSimulations(
             Simulation.KeepConstant(copies: 15, during: TimeSpan.FromSeconds(30))
@@ -152,29 +159,31 @@ public class LoadTest
     [Test]
     public void Mixed_Upload_Read_Load_Test()
     {
-        var uploadScenario = ScenarioBuilder.CreateScenario("mixed_upload", async ctx =>
+        var uploadIteration = 0;
+        var uploadScenario = Scenario.Create("mixed_upload", async ctx =>
         {
             var client = new HttpClient { Timeout = TimeSpan.FromSeconds(30) };
             using var content = new MultipartFormDataContent();
-            var xml = GenerateNfeXml(ctx.ScenarioIteration);
+            var iterValue = System.Threading.Interlocked.Increment(ref uploadIteration) - 1;
+            var xml = GenerateNfeXml(iterValue);
             content.Add(new StringContent(xml, Encoding.UTF8, "application/xml"), "file", "doc.xml");
 
             var res = await client.PostAsync($"{_apiBaseUrl}/documentos/upload", content);
             return res.IsSuccessStatusCode
-                ? Response.Ok(statusCode: (int)res.StatusCode)
-                : Response.Fail(statusCode: (int)res.StatusCode);
+                ? Response.Ok()
+                : Response.Fail();
         })
         .WithLoadSimulations(
             Simulation.KeepConstant(copies: 5, during: TimeSpan.FromSeconds(30))
         );
 
-        var readScenario = ScenarioBuilder.CreateScenario("mixed_read", async ctx =>
+        var readScenario = Scenario.Create("mixed_read", async ctx =>
         {
             var client = new HttpClient { Timeout = TimeSpan.FromSeconds(30) };
             var res = await client.GetAsync($"{_apiBaseUrl}/documentos?page=1&pageSize=50");
             return res.IsSuccessStatusCode
-                ? Response.Ok(statusCode: (int)res.StatusCode)
-                : Response.Fail(statusCode: (int)res.StatusCode);
+                ? Response.Ok()
+                : Response.Fail();
         })
         .WithLoadSimulations(
             Simulation.KeepConstant(copies: 5, during: TimeSpan.FromSeconds(30))
@@ -199,20 +208,19 @@ public class LoadTest
     public void UploadXml_Throughput_LimitTest()
     {
         var throughputPerSecond = 100;
-        var scenario = ScenarioBuilder.CreateScenario("upload_xml_throughput", async ctx =>
+        var iteration = 0;
+        var scenario = Scenario.Create("upload_xml_throughput", async ctx =>
         {
             var client = new HttpClient { Timeout = TimeSpan.FromSeconds(30) };
             using var content = new MultipartFormDataContent();
-            var xml = GenerateNfeXml(ctx.ScenarioIteration);
+            var iterValue = System.Threading.Interlocked.Increment(ref iteration) - 1;
+            var xml = GenerateNfeXml(iterValue);
             content.Add(new StringContent(xml, Encoding.UTF8, "application/xml"), "file", "doc.xml");
 
-            var sw = System.Diagnostics.Stopwatch.StartNew();
             var res = await client.PostAsync($"{_apiBaseUrl}/documentos/upload", content);
-            sw.Stop();
-
             return res.IsSuccessStatusCode
-                ? Response.Ok(statusCode: (int)res.StatusCode, latency: sw.Elapsed)
-                : Response.Fail(statusCode: (int)res.StatusCode, latency: sw.Elapsed);
+                ? Response.Ok()
+                : Response.Fail();
         })
         .WithLoadSimulations(
             Simulation.KeepConstant(
@@ -227,7 +235,7 @@ public class LoadTest
             .Run();
 
         var scenarioStats = stats.ScenarioStats.First();
-        var actualThroughput = scenarioStats.RPS.AllMeasurements.Average();
+        var actualThroughput = scenarioStats.Ok.Request.RPS;
 
         Assert.That(
             actualThroughput,
@@ -244,7 +252,10 @@ public class LoadTest
     private string GenerateNfeXml(int iteration)
     {
         var timestamp = DateTime.UtcNow.AddMinutes(iteration);
-        var cnpj = (10000000000000 + iteration).ToString().Substring(0, 14);
+        var baseCnpj = 10000000000000L + iteration;
+        var cnpj = baseCnpj.ToString()[..14];
+        var baseCnpjDest = 20000000000000L + iteration;
+        var cnpjDest = baseCnpjDest.ToString()[..14];
         var hash = Convert.ToBase64String(
             System.Security.Cryptography.SHA256.HashData(
                 Encoding.UTF8.GetBytes($"doc-{iteration}-{timestamp.Ticks}")
@@ -267,7 +278,7 @@ public class LoadTest
                   <xNome>Test Company {iteration}</xNome>
                 </emit>
                 <dest>
-                  <CNPJ>{(20000000000000 + iteration).ToString().Substring(0, 14)}</CNPJ>
+                  <CNPJ>{cnpjDest}</CNPJ>
                 </dest>
                 <total>
                   <ICMSTot>
@@ -282,22 +293,20 @@ public class LoadTest
     /// <summary>
     /// Valida resultados de teste de carga contra critérios de sucesso.
     /// </summary>
-    private void AssertLoadTestResults(LoadTestStats stats, string scenarioName, double minSuccessRate = 0.95)
+    private void AssertLoadTestResults(NodeStats stats, string scenarioName, double minSuccessRate = 0.95)
     {
         var scenario = stats.ScenarioStats.FirstOrDefault(s => s.ScenarioName == scenarioName);
-        Assert.That(scenario, Is.Not.Null, $"Cenário {scenarioName} não encontrado");
+        Assert.That(scenario, Is.Not.Null);
 
-        var successRate = scenario!.FailCount == 0
+        var successRate = scenario!.Fail.Request.Count == 0
             ? 1.0
-            : (double)scenario.OkCount / (scenario.OkCount + scenario.FailCount);
+            : (double)scenario.Ok.Request.Count / (scenario.Ok.Request.Count + scenario.Fail.Request.Count);
 
         Assert.That(
             successRate,
             Is.GreaterThanOrEqualTo(minSuccessRate),
-            $"Taxa de sucesso abaixo de {minSuccessRate * 100}%. " +
-            $"OK: {scenario.OkCount}, Falhas: {scenario.FailCount}, " +
-            $"Latência média: {scenario.Latency.Average}ms, " +
-            $"P95: {scenario.Latency.Percentile(95.0)}ms"
+            $"Taxa de sucesso abaixo de {minSuccessRate * 100}%. "
+            + $"OK: {scenario.Ok.Request.Count}, Falhas: {scenario.Fail.Request.Count}, "
         );
     }
 }

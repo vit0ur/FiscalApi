@@ -146,6 +146,31 @@ Todos os endpoints (GET, POST, PUT, DELETE) estarão prontos para uso com variá
 - **Unitários**: parser XML, idempotência, publisher, lógica de backoff.
 - **Integração**: idempotência real em **SQLite in-memory** (índices únicos simulados); publicar é mockado.
 
+### 🏗️ Testes de Arquitetura (NetArchTest)
+
+Validações automáticas de **Clean Architecture**, padrões de design e conformidade com dependências:
+
+#### Categorias de testes:
+
+- **Camadas (Layering)**: Domain não depende de ninguém; Application não depende de Infrastructure; ordem correta
+- **Abstração**: Repositories, Services e Handlers como interfaces
+- **Convenção de nomes**: Commands, Queries, DTOs, Handlers com nomes corretos
+- **CQRS**: Commands e Queries separados, handlers implementando MediatR
+- **Acoplamento**: DbContext não em Application, Controllers apenas em Api
+- **Coesão**: Entities em namespaces corretos, DTOs sem navigation properties
+
+#### Como executar:
+
+```bash
+# Todos os testes de arquitetura
+dotnet test --filter "Category=Architecture" -c Release --logger "console;verbosity=detailed"
+
+# Teste específico
+dotnet test --filter "Name=Domain_Should_Not_Depend_On_Any_Other_Layer" -c Release
+```
+
+**📖 Detalhes em**: [FiscalDocumentProcessor.Tests/Integration/ArchitectureTests.cs](FiscalDocumentProcessor.Tests/Integration/ArchitectureTests.cs) (40+ validações)
+
 ### 📊 Testes de Carga (NBomber)
 
 O projeto inclui testes de carga abrangentes usando **NBomber** para avaliar desempenho de ingestão e consultas sob diferentes cenários:
@@ -182,7 +207,10 @@ dotnet test --collect:"XPlat Code Coverage" --filter "Category=LoadTest"
 
 **Nota**: Os testes de carga requerem que a API esteja rodando (`docker compose up`)
 
-**📖 Para guia completo**: Veja [docs/LOAD_TESTING.md](docs/LOAD_TESTING.md)
+**📖 Detalhes em**:
+- [docs/ARCHITECTURE_TESTS.md](docs/ARCHITECTURE_TESTS.md) – 40+ validações de Clean Architecture
+- [docs/LOAD_TESTING.md](docs/LOAD_TESTING.md) – Guia completo de testes de carga
+- [docs/TESTING_QUICK_REFERENCE.md](docs/TESTING_QUICK_REFERENCE.md) – Referência rápida de comandos
 
 ## 🩺 Health Checks
 
