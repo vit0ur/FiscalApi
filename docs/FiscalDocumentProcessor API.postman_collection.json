@@ -1,0 +1,197 @@
+{
+  "info": {
+    "_postman_id": "b267831b-3a96-4355-984a-3a42adb52fb7",
+    "name": "FiscalDocumentProcessor API",
+    "description": "Collection to test FiscalDocumentProcessor API endpoints (upload, list, get, update, delete, health).\nSet variable `baseUrl` to your API base (e.g., http://localhost:8080).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "52397122",
+    "_collection_link": "https://go.postman.co/collection/52397122-b267831b-3a96-4355-984a-3a42adb52fb7?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Upload Documento (multipart)",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "file",
+              "type": "file",
+              "src": "postman-cloud:///1f10a880-7670-4ca0-b44a-3641084d5806"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{baseUrl}}/documentos/upload",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "documentos",
+            "upload"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Health",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/health",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "health"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "List Documentos (paged)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/documentos?page=1&pageSize=10&cnpj={{cnpj}}&uf={{uf}}&dataInicio={{dataInicio}}&dataFim={{dataFim}}&tipoDocumento={{tipoDocumento}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "documentos"
+          ],
+          "query": [
+            {
+              "key": "page",
+              "value": "1"
+            },
+            {
+              "key": "pageSize",
+              "value": "10"
+            },
+            {
+              "key": "cnpj",
+              "value": "{{cnpj}}"
+            },
+            {
+              "key": "uf",
+              "value": "{{uf}}"
+            },
+            {
+              "key": "dataInicio",
+              "value": "{{dataInicio}}"
+            },
+            {
+              "key": "dataFim",
+              "value": "{{dataFim}}"
+            },
+            {
+              "key": "tipoDocumento",
+              "value": "{{tipoDocumento}}"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Documento by ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/documentos/{{documentId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "documentos",
+            "{{documentId}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update Documento",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{ \"UF\": \"SP\", \"DataEmissao\": \"2024-02-01T00:00:00Z\", \"ValorTotal\": 123.45, \"Status\": \"Processado\" }"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/documentos/{{documentId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "documentos",
+            "{{documentId}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete Documento",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/documentos/f0e889d7-92c3-4efb-b7a8-57e3f33e5c79",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "documentos",
+            "f0e889d7-92c3-4efb-b7a8-57e3f33e5c79"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "documentId",
+      "value": ""
+    },
+    {
+      "key": "cnpj",
+      "value": ""
+    },
+    {
+      "key": "uf",
+      "value": ""
+    },
+    {
+      "key": "dataInicio",
+      "value": ""
+    },
+    {
+      "key": "dataFim",
+      "value": ""
+    },
+    {
+      "key": "tipoDocumento",
+      "value": ""
+    }
+  ]
+}

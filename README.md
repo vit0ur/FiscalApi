@@ -142,8 +142,47 @@ Todos os endpoints (GET, POST, PUT, DELETE) estarão prontos para uso com variá
 
 ## 🧪 Testes
 
+### Unitários e Integração
 - **Unitários**: parser XML, idempotência, publisher, lógica de backoff.
 - **Integração**: idempotência real em **SQLite in-memory** (índices únicos simulados); publicar é mockado.
+
+### 📊 Testes de Carga (NBomber)
+
+O projeto inclui testes de carga abrangentes usando **NBomber** para avaliar desempenho de ingestão e consultas sob diferentes cenários:
+
+#### Cenários disponíveis:
+
+- **UploadXml_ConstantLoad_Test** – 10 uploads simultâneos por 30s (carga constante)
+- **UploadXml_RampUp_Test** – Aumenta gradualmente de 1 a 20 req/s em 60s
+- **UploadXml_Stress_Test** – 50 uploads simultâneos por 20s (teste de pico)
+- **GetDocumentos_Read_Load_Test** – 15 leituras simultâneas por 30s
+- **Mixed_Upload_Read_Load_Test** – 50% upload + 50% leitura (cenário realista)
+- **UploadXml_Throughput_LimitTest** – Valida throughput mínimo de 100 req/s
+
+#### Como executar:
+
+```bash
+# Todos os testes de carga
+dotnet test --filter "Category=LoadTest" -c Release --logger "console;verbosity=detailed"
+
+# Teste específico
+dotnet test --filter "Name=UploadXml_ConstantLoad_Test" -c Release
+
+# Com relatório de cobertura
+dotnet test --collect:"XPlat Code Coverage" --filter "Category=LoadTest"
+```
+
+#### Métricas coletadas:
+
+- Taxa de sucesso (%)
+- Requisições por segundo (RPS)
+- Latência média, P50, P95, P99
+- Tempo de resposta (OK/Fail)
+- Identificação de gargalos
+
+**Nota**: Os testes de carga requerem que a API esteja rodando (`docker compose up`)
+
+**📖 Para guia completo**: Veja [docs/LOAD_TESTING.md](docs/LOAD_TESTING.md)
 
 ## 🩺 Health Checks
 
@@ -192,8 +231,8 @@ CREATE UNIQUE INDEX IF NOT EXISTS IX_documentos_hash ON documentos_fiscais(HashX
 - Autenticação/Autorização (OAuth2/JWT) e políticas de mascaramento condicionado.
 - Upload assíncrono via S3/Azure Blob e eventos.
 - OpenTelemetry (traces/metrics) e dashboards.
-- Testes de carga (k6/NBomber) e limites explícitos de throughput.
 - Fila de **retry** dedicada com TTL.
+- Dashboard de monitoramento em tempo real para testes de carga.
 
 ---
 

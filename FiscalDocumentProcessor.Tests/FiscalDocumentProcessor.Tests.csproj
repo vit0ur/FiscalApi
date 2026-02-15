@@ -14,7 +14,7 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.6" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.0" />
     <PackageReference Include="NetArchTest.Rules" Version="0.13.0" />
-    <!-- NBomber removed: load test excluded to keep CI/build simple locally -->
+    <PackageReference Include="NBomber" Version="5.5.7" />
     <PackageReference Include="coverlet.collector" Version="6.0.2" />
   </ItemGroup>
   <ItemGroup>
@@ -23,7 +23,5 @@
     <ProjectReference Include="..\FiscalDocumentProcessor.Domain\FiscalDocumentProcessor.Domain.csproj" />
     <ProjectReference Include="..\FiscalDocumentProcessor.Api\FiscalDocumentProcessor.Api.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Remove="Integration/**\*.cs" />
-  </ItemGroup>
+  <!-- Include all integration and load tests -->
 </Project>
