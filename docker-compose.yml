@@ -9,11 +9,6 @@ services:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
-  rabbitmq:
-    image: rabbitmq:3-management
-    ports:
-      - "5672:5672"
-      - "15672:15672"
   api:
     build:
       context: ./
@@ -21,28 +16,12 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - FISCALDB_CONNECTION=Host=db;Port=5432;Database=fiscaldb;Username=postgres;Password=postgres
-      - RABBITMQ_URI=${RABBITMQ_URI:-amqp://guest:guest@rabbitmq:5672/}
+      - RABBITMQ_URI=${RABBITMQ_URI}
       - RABBITMQ_EXCHANGE=fiscal.documents
       - RABBITMQ_ROUTING_KEY=document.processed
     depends_on:
       - db
-      - rabbitmq
     ports:
       - "8080:8080"
-  worker:
-    build:
-      context: ./
-      dockerfile: ./FiscalDocumentProcessor.Worker/Dockerfile
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - FISCALDB_CONNECTION=Host=db;Port=5432;Database=fiscaldb;Username=postgres;Password=postgres
-      - RABBITMQ_URI=${RABBITMQ_URI:-amqp://guest:guest@rabbitmq:5672/}
-      - RABBITMQ_EXCHANGE=fiscal.documents
-      - RABBITMQ_ROUTING_KEY=document.processed
-      - RABBITMQ_QUEUE=fiscal.documents.processor
-      - RABBITMQ_DLX=fiscal.documents.dlx
-    depends_on:
-      - db
-      - rabbitmq
 volumes:
   pgdata:

@@ -20,7 +20,6 @@ public class AppDbContext : DbContext
         d.Property(x => x.CNPJDestinatario).HasMaxLength(20);
         d.Property(x => x.UF).HasMaxLength(2);
         d.Property(x => x.HashXml).HasMaxLength(128).IsRequired();
-        d.Property(x => x.ValorTotal).HasColumnType("numeric(18,2)");
         d.HasIndex(x => x.ChaveAcesso).IsUnique();
         d.HasIndex(x => x.HashXml).IsUnique();
         d.Property(x => x.XmlOriginalGzip);

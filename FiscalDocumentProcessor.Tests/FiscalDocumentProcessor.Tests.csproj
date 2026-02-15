@@ -14,8 +14,8 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.6" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="8.0.6" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.0" />
-    <PackageReference Include="NetArchTest.Rules" Version="1.0.2" />
-    <PackageReference Include="NBomber" Version="5.6.0" />
+    <PackageReference Include="NetArchTest.Rules" Version="0.13.0" />
+    <PackageReference Include="NBomber" Version="5.5.7" />
     <PackageReference Include="coverlet.collector" Version="6.0.2" />
   </ItemGroup>
   <ItemGroup>

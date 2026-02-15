@@ -29,7 +29,7 @@ public static class DocumentoFiscalMapper
         => new(
             d.Id,
             d.TipoDocumento.ToString(),
-            d.ChaveAcesso ?? string.Empty,
+            d.ChaveAcesso,
             MaskCnpj(d.CNPJEmitente),
             MaskCnpj(d.CNPJDestinatario),
             d.UF,

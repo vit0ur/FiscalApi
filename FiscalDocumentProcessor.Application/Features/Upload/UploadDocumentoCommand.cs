@@ -41,7 +41,7 @@ public sealed class UploadDocumentoCommandHandler : IRequestHandler<UploadDocume
         var doc = new DocumentoFiscal
         {
             TipoDocumento = parsed.Tipo,
-            ChaveAcesso = string.IsNullOrWhiteSpace(parsed.ChaveAcesso) ? null : parsed.ChaveAcesso,
+            ChaveAcesso = parsed.ChaveAcesso ?? string.Empty,
             CNPJEmitente = parsed.CNPJEmitente,
             CNPJDestinatario = parsed.CNPJDestinatario,
             UF = parsed.UF,
@@ -53,22 +53,9 @@ public sealed class UploadDocumentoCommandHandler : IRequestHandler<UploadDocume
             Status = StatusDocumento.Recebido
         };
 
-        try
-        {
-            doc = await _repo.AddAsync(doc, ct);
-        }
-        catch (DuplicateDocumentoException)
-        {
-            // Possible race condition on unique HashXml/ChaveAcesso. Return existing record idempotently.
-            var existingByHash = await _repo.GetByHashAsync(hash, ct);
-            if (existingByHash is not null)
-            {
-                return new UploadDocumentoResult(existingByHash.Id, true);
-            }
-            throw;
-        }
+        doc = await _repo.AddAsync(doc, ct);
 
-        await _publisher.PublishDocumentoProcessadoAsync(doc.Id, doc.TipoDocumento.ToString(), doc.ChaveAcesso ?? string.Empty, doc.DataProcessamento, ct);
+        await _publisher.PublishDocumentoProcessadoAsync(doc.Id, doc.TipoDocumento.ToString(), doc.ChaveAcesso, doc.DataProcessamento, ct);
 
         return new UploadDocumentoResult(doc.Id, false);
     }

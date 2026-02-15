@@ -27,27 +27,7 @@ builder.Services.Configure<RabbitMqOptions>(opt => { opt.Uri = rabbitUri; opt.Ex
 builder.Services.AddHostedService<WorkerService>();
 
 var app = builder.Build();
-try
-{
-    using var scope = app.Services.CreateScope();
-    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    var maxAttempts = 30;
-    var attempt = 0;
-    while (attempt++ < maxAttempts)
-    {
-        try
-        {
-            await db.Database.MigrateAsync();
-            break;
-        }
-        catch
-        {
-            var delay = Math.Min(5000, 500 * (int)Math.Pow(2, Math.Min(attempt, 10)));
-            await Task.Delay(delay);
-        }
-    }
-}
-catch { }
+try { using var scope = app.Services.CreateScope(); var db = scope.ServiceProvider.GetRequiredService<AppDbContext>(); db.Database.EnsureCreated(); } catch { }
 app.Run();
 
 public class WorkerService : BackgroundService

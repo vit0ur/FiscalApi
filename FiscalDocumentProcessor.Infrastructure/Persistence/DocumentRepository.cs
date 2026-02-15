@@ -20,15 +20,8 @@ public class DocumentRepository : IDocumentRepository
     public async Task<DocumentoFiscal> AddAsync(DocumentoFiscal documento, CancellationToken ct)
     {
         _db.Documentos.Add(documento);
-        try
-        {
-            await _db.SaveChangesAsync(ct);
-            return documento;
-        }
-        catch (DbUpdateException ex) when (IsUniqueViolation(ex))
-        {
-            throw new DuplicateDocumentoException("Documento já existente (violação de unicidade).", ex);
-        }
+        await _db.SaveChangesAsync(ct);
+        return documento;
     }
 
     public async Task UpdateAsync(DocumentoFiscal documento, CancellationToken ct)
@@ -64,11 +57,5 @@ public class DocumentRepository : IDocumentRepository
             .Take(pageSize)
             .ToListAsync(ct);
         return (items, total);
-    }
-
-    private static bool IsUniqueViolation(DbUpdateException ex)
-    {
-        var msg = (ex.InnerException?.Message ?? ex.Message).ToLowerInvariant();
-        return msg.Contains("unique") || msg.Contains("duplicate") || msg.Contains("23505") || msg.Contains("constraint");
     }
 }

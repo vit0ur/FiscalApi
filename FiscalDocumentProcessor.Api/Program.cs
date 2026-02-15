@@ -136,10 +136,13 @@ using (var scope = app.Services.CreateScope())
         attempt++;
         try
         {
-            await db.Database.MigrateAsync();
-            connected = true;
-            Log.Information("Database is available and migrations applied (attempt {Attempt}).", attempt);
-            break;
+            if (await db.Database.CanConnectAsync())
+            {
+                db.Database.EnsureCreated();
+                connected = true;
+                Log.Information("Database is available (attempt {Attempt}).", attempt);
+                break;
+            }
         }
         catch (Exception ex)
         {
