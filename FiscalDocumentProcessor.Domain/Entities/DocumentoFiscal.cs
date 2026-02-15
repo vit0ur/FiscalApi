@@ -6,7 +6,7 @@ public class DocumentoFiscal
 {
     public Guid Id { get; set; } = Guid.NewGuid();
     public TipoDocumento TipoDocumento { get; set; }
-    public string ChaveAcesso { get; set; } = string.Empty; // unique
+    public string? ChaveAcesso { get; set; } // unique when present
     public string? CNPJEmitente { get; set; }
     public string? CNPJDestinatario { get; set; }
     public string? UF { get; set; }

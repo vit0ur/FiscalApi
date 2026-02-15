@@ -15,6 +15,14 @@ Backend em **.NET 8** para **ingestão e processamento de documentos fiscais XML
 
 Escolhi **PostgreSQL** por ser open-source, robusto para carga OLTP, excelente suporte a índices e transações, e possuir provider EF Core maduro. Os dados são essencialmente relacionais (consultas paginadas por período, CNPJ, UF e tipo), beneficiando-se de **índices** e **consistência**. O XML completo é armazenado **compactado (GZip)** em `bytea`, mantendo custo de armazenamento baixo. Índices **únicos** em `ChaveAcesso` e **principalmente** em `HashXml (SHA-256)` garantem **idempotência**.
 
+### ✅ Migrations
+
+As migrations EF Core estão em `FiscalDocumentProcessor.Infrastructure/Persistence/Migrations`. Em produção, a API e o Worker executam `Database.Migrate()` automaticamente na inicialização. Para aplicar manualmente:
+
+```bash
+dotnet ef database update --project FiscalDocumentProcessor.Infrastructure --startup-project FiscalDocumentProcessor.Api
+```
+
 ## 🔐 Segurança
 
 - **XXE protegido** via `XmlReaderSettings` com `DtdProcessing=Prohibit` e `XmlResolver=null` ao parsear.
@@ -60,6 +68,7 @@ docker compose up -d --build
 Este comando irá:
 - Construir as imagens da API e do Worker
 - Iniciar um container PostgreSQL
+- Iniciar um container RabbitMQ (management em `http://localhost:15672`)
 - Iniciar os containers da API e Worker em background
 
 Para parar os serviços:

@@ -61,7 +61,7 @@ public class DocumentoFiscalService
                 "fiscal.documents.exchange",
                 "fiscal.document.processed",
                 new DocumentoFiscalProcessadoEvent(
-                    docParsed.Id, docParsed.TipoDocumento, docParsed.ChaveAcesso, docParsed.DataProcessamento),
+                    docParsed.Id, docParsed.TipoDocumento, docParsed.ChaveAcesso ?? string.Empty, docParsed.DataProcessamento),
                 ct);
         }
         catch (Exception ex)
@@ -131,7 +131,7 @@ public class DocumentoFiscalService
     private static DocumentoFiscalResponse ToResponse(FiscalDocumentProcessor.Domain.Entities.DocumentoFiscal d) => new(
         d.Id,
         d.TipoDocumento,
-        d.ChaveAcesso,
+        d.ChaveAcesso ?? string.Empty,
         CnpjMask.Mask(d.CNPJEmitente),
         CnpjMask.Mask(d.CNPJDestinatario),
         d.UF ?? string.Empty,
