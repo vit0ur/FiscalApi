@@ -149,7 +149,7 @@ using (var scope = app.Services.CreateScope())
             Log.Warning(ex, "Database connection attempt {Attempt} failed.", attempt);
         }
 
-        var delay = Math.Min(5000, 500 * (int)Math.Pow(2, attempt));
+        var delay = Math.Min(5000, 500 * (int)Math.Pow(2, Math.Min(attempt, 10)));
         await Task.Delay(delay);
     }
 

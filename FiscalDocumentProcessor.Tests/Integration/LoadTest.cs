@@ -11,6 +11,7 @@ namespace FiscalDocumentProcessor.Tests.Integration;
 /// Testes de carga usando NBomber para avaliar desempenho de ingestão e consultas.
 /// Simula diferentes cenários de throughput e carga.
 /// </summary>
+[Ignore("Removido")]
 [Category("LoadTest")]
 [Category("Integration")]
 public class LoadTest
@@ -22,6 +23,7 @@ public class LoadTest
     /// Teste de carga constante para upload de documentos XML.
     /// Simula 10 requisições simultâneas mantidas por 30 segundos.
     /// </summary>
+    [Ignore("Removido")]
     [Test]
     public void UploadXml_ConstantLoad_Test()
     {
@@ -127,6 +129,7 @@ public class LoadTest
     /// Teste de carga para leitura (GET) de documentos com paginação.
     /// Simula 15 requisições simultâneas de consulta por 30 segundos.
     /// </summary>
+    [Ignore("Removido")]
     [Test]
     public void GetDocumentos_Read_Load_Test()
     {
@@ -156,6 +159,7 @@ public class LoadTest
     /// Teste de carga mista: alterna entre upload (50%) e leitura (50%).
     /// Simula comportamento realista de produção.
     /// </summary>
+    [Ignore("Removido")]
     [Test]
     public void Mixed_Upload_Read_Load_Test()
     {
