@@ -38,10 +38,20 @@ public sealed class UploadDocumentoCommandHandler : IRequestHandler<UploadDocume
         using var ms = new MemoryStream(request.XmlBytes);
         var parsed = await XmlDocumentParser.ParseAsync(ms, ct);
 
+        var chaveAcesso = string.IsNullOrWhiteSpace(parsed.ChaveAcesso) ? null : parsed.ChaveAcesso;
+        if (!string.IsNullOrWhiteSpace(chaveAcesso))
+        {
+            var existingByChave = await _repo.GetByChaveAsync(chaveAcesso, ct);
+            if (existingByChave is not null)
+            {
+                return new UploadDocumentoResult(existingByChave.Id, true);
+            }
+        }
+
         var doc = new DocumentoFiscal
         {
             TipoDocumento = parsed.Tipo,
-            ChaveAcesso = parsed.ChaveAcesso ?? string.Empty,
+            ChaveAcesso = chaveAcesso,
             CNPJEmitente = parsed.CNPJEmitente,
             CNPJDestinatario = parsed.CNPJDestinatario,
             UF = parsed.UF,
@@ -53,9 +63,22 @@ public sealed class UploadDocumentoCommandHandler : IRequestHandler<UploadDocume
             Status = StatusDocumento.Recebido
         };
 
-        doc = await _repo.AddAsync(doc, ct);
+        try
+        {
+            doc = await _repo.AddAsync(doc, ct);
+        }
+        catch
+        {
+            var dup = await _repo.GetByHashAsync(hash, ct) ??
+                      (!string.IsNullOrWhiteSpace(chaveAcesso) ? await _repo.GetByChaveAsync(chaveAcesso, ct) : null);
+            if (dup is not null)
+            {
+                return new UploadDocumentoResult(dup.Id, true);
+            }
+            throw;
+        }
 
-        await _publisher.PublishDocumentoProcessadoAsync(doc.Id, doc.TipoDocumento.ToString(), doc.ChaveAcesso, doc.DataProcessamento, ct);
+        await _publisher.PublishDocumentoProcessadoAsync(doc.Id, doc.TipoDocumento.ToString(), doc.ChaveAcesso ?? string.Empty, doc.DataProcessamento, ct);
 
         return new UploadDocumentoResult(doc.Id, false);
     }

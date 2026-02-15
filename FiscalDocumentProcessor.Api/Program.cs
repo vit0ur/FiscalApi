@@ -136,17 +136,39 @@ using (var scope = app.Services.CreateScope())
         attempt++;
         try
         {
-            if (await db.Database.CanConnectAsync())
+            if (db.Database.IsNpgsql())
+            {
+                await db.Database.MigrateAsync();
+                                await db.Database.ExecuteSqlRawAsync(@"
+CREATE TABLE IF NOT EXISTS ""documentos_fiscais"" (
+    ""Id"" uuid PRIMARY KEY,
+    ""TipoDocumento"" text NOT NULL,
+    ""ChaveAcesso"" varchar(60),
+    ""CNPJEmitente"" varchar(20),
+    ""CNPJDestinatario"" varchar(20),
+    ""UF"" char(2),
+    ""DataEmissao"" timestamp NULL,
+    ""ValorTotal"" numeric(18,2) NULL,
+    ""XmlOriginalGzip"" bytea NULL,
+    ""HashXml"" varchar(128) NOT NULL,
+    ""DataProcessamento"" timestamp NOT NULL,
+    ""Status"" int NOT NULL
+);
+CREATE UNIQUE INDEX IF NOT EXISTS ""IX_documentos_chave"" ON ""documentos_fiscais""(""ChaveAcesso"");
+CREATE UNIQUE INDEX IF NOT EXISTS ""IX_documentos_hash"" ON ""documentos_fiscais""(""HashXml"");
+");
+            }
+            else
             {
                 db.Database.EnsureCreated();
-                connected = true;
-                Log.Information("Database is available (attempt {Attempt}).", attempt);
-                break;
             }
+            connected = true;
+            Log.Information("Database is available (attempt {Attempt}).", attempt);
+            break;
         }
         catch (Exception ex)
         {
-            Log.Warning(ex, "Database connection attempt {Attempt} failed.", attempt);
+            Log.Warning(ex, "Database migration attempt {Attempt} failed.", attempt);
         }
 
         var delay = Math.Min(5000, 500 * (int)Math.Pow(2, Math.Min(attempt, 10)));
@@ -155,7 +177,8 @@ using (var scope = app.Services.CreateScope())
 
     if (!connected)
     {
-        Log.Error("Could not connect to the database after {MaxAttempts} attempts.", maxAttempts);
+        Log.Error("Could not migrate/connect to the database after {MaxAttempts} attempts.", maxAttempts);
+        throw new InvalidOperationException("Database unavailable after retry attempts.");
     }
 }
 

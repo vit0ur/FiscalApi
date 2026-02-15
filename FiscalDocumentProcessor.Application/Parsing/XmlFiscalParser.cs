@@ -76,7 +76,7 @@ public class XmlFiscalParser : IXmlFiscalParser
             DataEmissao = dataEmissao,
             ValorTotal = valorTotal,
             DataProcessamento = DateTime.UtcNow,
-            Status = FiscalDocumentProcessor.Domain.Entities.StatusDocumento.Processado
+            Status = FiscalDocumentProcessor.Domain.Entities.StatusDocumento.Recebido
         };
 
         return (tipo, doc, chaveAcesso);

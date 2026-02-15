@@ -15,7 +15,7 @@ public class AppDbContext : DbContext
         d.ToTable("documentos_fiscais");
         d.HasKey(x => x.Id);
         d.Property(x => x.TipoDocumento).HasConversion<string>().IsRequired();
-        d.Property(x => x.ChaveAcesso).HasMaxLength(60);
+        d.Property(x => x.ChaveAcesso).HasMaxLength(60).IsRequired(false);
         d.Property(x => x.CNPJEmitente).HasMaxLength(20);
         d.Property(x => x.CNPJDestinatario).HasMaxLength(20);
         d.Property(x => x.UF).HasMaxLength(2);

@@ -228,7 +228,11 @@ dotnet test --collect:"XPlat Code Coverage" --filter "Category=LoadTest"
 
 - Logging estruturado com **Serilog** no console.
 
-## 🗂️ Scripts SQL (alternativa às migrations)
+## 🗂️ Migrations EF Core (e scripts SQL)
+
+As **migrations** já estão versionadas no projeto e são aplicadas automaticamente ao iniciar a **API** ou o **Worker** quando o provider é **PostgreSQL**. Para ambientes sem migrations (ex.: SQLite local), o `EnsureCreated` é usado apenas em desenvolvimento.
+
+Se preferir aplicar manualmente ou em ambientes restritos, use o script abaixo como alternativa:
 
 ```sql
 CREATE TABLE IF NOT EXISTS documentos_fiscais (

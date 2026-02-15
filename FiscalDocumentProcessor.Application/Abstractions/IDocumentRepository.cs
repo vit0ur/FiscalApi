@@ -6,6 +6,7 @@ public interface IDocumentRepository
 {
     Task<DocumentoFiscal?> GetByIdAsync(Guid id, CancellationToken ct);
     Task<DocumentoFiscal?> GetByHashAsync(string hash, CancellationToken ct);
+    Task<DocumentoFiscal?> GetByChaveAsync(string chave, CancellationToken ct);
     Task<DocumentoFiscal> AddAsync(DocumentoFiscal documento, CancellationToken ct);
     Task UpdateAsync(DocumentoFiscal documento, CancellationToken ct);
     Task DeleteAsync(Guid id, CancellationToken ct);

@@ -17,6 +17,9 @@ public class DocumentRepository : IDocumentRepository
     public async Task<DocumentoFiscal?> GetByHashAsync(string hash, CancellationToken ct)
         => await _db.Documentos.FirstOrDefaultAsync(x => x.HashXml == hash, ct);
 
+    public async Task<DocumentoFiscal?> GetByChaveAsync(string chave, CancellationToken ct)
+        => await _db.Documentos.FirstOrDefaultAsync(x => x.ChaveAcesso == chave, ct);
+
     public async Task<DocumentoFiscal> AddAsync(DocumentoFiscal documento, CancellationToken ct)
     {
         _db.Documentos.Add(documento);

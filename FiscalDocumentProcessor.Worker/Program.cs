@@ -27,7 +27,66 @@ builder.Services.Configure<RabbitMqOptions>(opt => { opt.Uri = rabbitUri; opt.Ex
 builder.Services.AddHostedService<WorkerService>();
 
 var app = builder.Build();
-try { using var scope = app.Services.CreateScope(); var db = scope.ServiceProvider.GetRequiredService<AppDbContext>(); db.Database.EnsureCreated(); } catch { }
+try
+{
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+    var maxAttempts = 30;
+    var attempt = 0;
+    var connected = false;
+    while (attempt < maxAttempts && !connected)
+    {
+        attempt++;
+        try
+        {
+            if (db.Database.IsNpgsql())
+            {
+                db.Database.Migrate();
+                                db.Database.ExecuteSqlRaw(@"
+CREATE TABLE IF NOT EXISTS ""documentos_fiscais"" (
+    ""Id"" uuid PRIMARY KEY,
+    ""TipoDocumento"" text NOT NULL,
+    ""ChaveAcesso"" varchar(60),
+    ""CNPJEmitente"" varchar(20),
+    ""CNPJDestinatario"" varchar(20),
+    ""UF"" char(2),
+    ""DataEmissao"" timestamp NULL,
+    ""ValorTotal"" numeric(18,2) NULL,
+    ""XmlOriginalGzip"" bytea NULL,
+    ""HashXml"" varchar(128) NOT NULL,
+    ""DataProcessamento"" timestamp NOT NULL,
+    ""Status"" int NOT NULL
+);
+CREATE UNIQUE INDEX IF NOT EXISTS ""IX_documentos_chave"" ON ""documentos_fiscais""(""ChaveAcesso"");
+CREATE UNIQUE INDEX IF NOT EXISTS ""IX_documentos_hash"" ON ""documentos_fiscais""(""HashXml"");
+");
+            }
+            else
+            {
+                db.Database.EnsureCreated();
+            }
+
+            connected = true;
+            Log.Information("Database is available (attempt {Attempt}).", attempt);
+            break;
+        }
+        catch (Exception ex)
+        {
+            Log.Warning(ex, "Database migration attempt {Attempt} failed.", attempt);
+        }
+
+        var delay = Math.Min(5000, 500 * (int)Math.Pow(2, Math.Min(attempt, 10)));
+        Thread.Sleep(delay);
+    }
+
+    if (!connected)
+        throw new InvalidOperationException("Database unavailable after retry attempts.");
+}
+catch
+{
+    throw;
+}
 app.Run();
 
 public class WorkerService : BackgroundService
