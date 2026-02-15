@@ -47,9 +47,40 @@ Escolhi **PostgreSQL** por ser open-source, robusto para carga OLTP, excelente s
 
 ## 🚀 Como executar
 
-Pré-requisitos: .NET 8 SDK e acesso a um PostgreSQL (local ou gerenciado).
+### Opção 1: Docker Compose (Recomendado)
 
-### Variáveis de ambiente
+Pré-requisitos: **Docker** e **Docker Compose** instalados.
+
+Para iniciar o projeto localmente com todos os serviços (API, PostgreSQL e Worker):
+
+```bash
+docker compose up -d --build
+```
+
+Este comando irá:
+- Construir as imagens da API e do Worker
+- Iniciar um container PostgreSQL
+- Iniciar os containers da API e Worker em background
+
+Para parar os serviços:
+
+```bash
+docker compose down
+```
+
+Para visualizar os logs:
+
+```bash
+docker compose logs -f
+```
+
+**Variáveis de ambiente:** O `docker-compose.yml` já contém as configurações necessárias. Caso queira customizar (ex: credenciais do RabbitMQ), edite o arquivo ou passe variáveis de ambiente na linha de comando.
+
+### Opção 2: Execução local (sem Docker)
+
+Pré-requisitos: **.NET 8 SDK**, **PostgreSQL** e acesso a um **RabbitMQ (CloudAMQP)**.
+
+#### Variáveis de ambiente
 
 ```bash
 # Banco
@@ -63,43 +94,43 @@ export RABBITMQ_QUEUE="fiscal.documents.processor"
 export RABBITMQ_DLX="fiscal.documents.dlx"
 
 # Validação opcional de schema
-Você pode fornecer `XSD_PATH` apontando para um arquivo `.xsd` ou diretório contendo XSDs. Se definido, o serviço validará o XML antes do parse e rejeitará uploads que não respeitem o schema.
-```bash
 export XSD_PATH="/path/to/schemas" # ou /path/to/schema.xsd
 ```
-```
 
-### Restaurar, buildar, testar
+#### Restaurar, buildar e testar
 
 ```bash
 dotnet restore
 dotnet build -c Release
-Dotnet test -c Release
+dotnet test -c Release
 ```
 
-### Executar API
+#### Executar API
 
 ```bash
 dotnet run --project FiscalDocumentProcessor.Api
 ```
 
-Acesse Swagger em `https://localhost:7057/swagger` (em Development).
+Acesse Swagger em `https://localhost:8080/swagger` (em Development).
 
-### Executar Worker
+#### Executar Worker
 
 ```bash
 dotnet run --project FiscalDocumentProcessor.Worker
 ```
 
-## 📦 Docker Compose (opcional)
+## 📮 Importar Collection no Postman
 
-Um `docker-compose.yml` simples para API + PostgreSQL é incluído (RabbitMQ é externo). Ajuste variáveis de ambiente conforme seu CloudAMQP.
+Para facilitar os testes da API, uma **Collection do Postman** está disponível em `docs/FiscalDocumentProcessor.postman_collection.json`.
 
-```yaml
-author: you
-```
+### Como importar:
 
-> Observação: RabbitMQ local **não é necessário**. O sistema usa **CloudAMQP**.
+1. Abra o **Postman**
+2. Clique em **Import** (ou Ctrl+O)
+3. Selecione a aba **Upload Files** e escolha `docs/FiscalDocumentProcessor.postman_collection.json`
+4. A coleção será carregada com todos os endpoints pré-configurados
+
+Todos os endpoints (GET, POST, PUT, DELETE) estarão prontos para uso com variáveis de ambiente e exemplos de requisição.
 
 ## 📚 Endpoints
 
